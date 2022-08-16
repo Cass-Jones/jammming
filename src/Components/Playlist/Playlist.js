@@ -2,7 +2,7 @@ import React from "react";
 import TrackList from "../TrackList/TrackList";
 import "./Playlist.css";
 
-const Playlist = ({ playlistData, removeSong, updatePlaylistName }) => {
+const Playlist = ({ playlistData, removeSong, updatePlaylistName, onSave }) => {
   return (
     <div className="Playlist">
       <input
@@ -14,7 +14,9 @@ const Playlist = ({ playlistData, removeSong, updatePlaylistName }) => {
         isRemoval={true}
         removeSong={removeSong}
       />
-      <button className="Playlist-save">SAVE TO SPOTIFY</button>
+      <button className="Playlist-save" onClick={onSave}>
+        SAVE TO SPOTIFY
+      </button>
     </div>
   );
 };

@@ -4,11 +4,16 @@ import SearchBar from "../SearchBar/SearchBar";
 import SearchResults from "../SearchResults/SearchResults";
 import Playlist from "../Playlist/Playlist";
 import { tracks } from "../../testing/mockData";
+import {
+  getAccessToken,
+  searchSpotify,
+  saveUsersPlaylist,
+} from "../../util/Spotify";
 
 function App() {
-  const [searchResults, setSearchResults] = useState(tracks);
-
+  getAccessToken();
   const [playlistData, setPlaylistData] = useState({ tracks: [], name: "" });
+  const [searchResults, setSearchResults] = useState(playlistData.tracks || []);
 
   //Handle adding song to playlist
   const addSong = (track) => {
@@ -50,13 +55,35 @@ function App() {
     console.log(playlistData);
   };
 
+  // Handle playlist save
+  const savePlaylist = async () => {
+    const trackURIs = [];
+    playlistData.tracks.forEach((item) => {
+      trackURIs.push(item.uri);
+    });
+
+    await saveUsersPlaylist(playlistData.name, trackURIs).then((res) => {
+      console.log(res);
+    });
+  };
+
+  // Handle spoify search
+  const search = async (searchTerm) => {
+    return await searchSpotify(searchTerm);
+  };
+
+  //Handle playlist saving
+  const sendPlaylistToSpotify = async () => {
+    const playlistTracks = savePlaylist();
+  };
+
   return (
     <div>
       <h1>
         Ja<span className="highlight">mmm</span>ing
       </h1>
       <div className="App">
-        <SearchBar setSearchResults={setSearchResults} />
+        <SearchBar setSearchResults={setSearchResults} search={search} />
 
         <div className="App-playlist">
           <SearchResults searchResults={searchResults} addSong={addSong} />
@@ -64,6 +91,7 @@ function App() {
             playlistData={playlistData}
             removeSong={removeSong}
             updatePlaylistName={updatePlaylistName}
+            onSave={savePlaylist}
           />
         </div>
       </div>
